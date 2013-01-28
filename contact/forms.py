@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from django import forms
-from mtrack_project.rapidsms_mtrack.mtrack.models import Reporters
+from mtrack.models import Reporters
 from rapidsms.models import Contact, Connection
 from django.contrib.auth.models import Group
 from django.db.models import Q

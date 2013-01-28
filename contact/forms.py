@@ -311,8 +311,10 @@ class MassTextForm(ActionForm):
         return text
 
     def perform(self, request, results):
-        if type(results).__name__ != 'QuerySet':results = Reporters.objects.filter(pk__in=request.REQUEST.get('results',None))
-        logger.info('results type:%s'%type(results).__name__)
+        if type(results).__name__ != 'QuerySet':
+            logger.info('results type:%s'%type(results).__name__)
+            logger.info('results :%s'%str(results))
+            results = Reporters.objects.filter(pk__in=request.REQUEST.get('results',""))
         if results is None or len(results) == 0:
             return 'A message must have one or more recipients!', 'error'
 

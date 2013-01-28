@@ -311,7 +311,6 @@ class MassTextForm(ActionForm):
         return text
 
     def perform(self, request, results):
-        import pdb;pdb.set_trace();
         if type(results).__name__ != 'QuerySet':results = Reporters.objects.filter(pk__in=request.REQUEST.get('results',None))
         logger.info('results type:%s'%type(results).__name__)
         if results is None or len(results) == 0:

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import logging
 from django import forms
-from mtrack.models import Reporters
 from rapidsms.models import Contact, Connection
 from django.contrib.auth.models import Group
 from django.db.models import Q
@@ -312,9 +311,7 @@ class MassTextForm(ActionForm):
 
     def perform(self, request, results):
         if type(results).__name__ != 'QuerySet':
-            logger.info('results type:%s'%type(results).__name__)
-            logger.info('results :%s'%str(results))
-            results = Reporters.objects.filter(pk__in=request.REQUEST.get('results',""))
+            results = Contact.objects.filter(pk__in=request.REQUEST.get('results',""))
         if results is None or len(results) == 0:
             return 'A message must have one or more recipients!', 'error'
 

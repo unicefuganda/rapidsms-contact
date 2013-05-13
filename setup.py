@@ -13,8 +13,8 @@ setup(
 
     description='Views for generic contact management.',
     long_description=open('README.rst').read(),
-    author='Mugisha Moses',
-    author_email='mossplix@gmail.com',
+    author='Engulu Paul',
+    author_email='askpaul82@gmail.com',
 
     url='http://github.com:/mossplix/rapidsms-contact',
     download_url='http://github.com:/mossplix/rapidsms-contact/downloads',

@@ -8,8 +8,7 @@ setup(
     install_requires = ["rapidsms", 'rapidsms-generic'],
 
     dependency_links = [
-	 "git+git://github.com/unicefuganda/rapidsms.git@master#egg=rapidsms"
-         "git+git://github.com/unicefuganda/rapidsms-generic.git@master#egg=rapidsms-generic"
+	"git+git://github.com/unicefuganda/rapidsms-generic.git@master#egg=rapidsms-generic"
     ],
 
     description='Views for generic contact management.',

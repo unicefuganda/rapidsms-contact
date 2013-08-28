@@ -19,6 +19,8 @@ import datetime
 from django.core.exceptions import FieldError
 
 logger = logging.getLogger(__name__)
+
+
 class FlaggedMessageForm(forms.ModelForm):
     class Meta:
         model = Flag
@@ -27,7 +29,7 @@ class FlaggedMessageForm(forms.ModelForm):
 
 class ReplyForm(forms.Form):
     recipient = forms.CharField(max_length=20)
-    message = forms.CharField(max_length=160, widget=forms.TextInput(attrs={'size':'60'}))
+    message = forms.CharField(max_length=160, widget=forms.TextInput(attrs={'size': '60'}))
     in_response_to = forms.ModelChoiceField(queryset=Message.objects.filter(direction='I'), widget=forms.HiddenInput())
 
     def clean(self):
@@ -54,7 +56,6 @@ class ReplyForm(forms.Form):
 
 
 class FilterGroupsForm(FilterForm):
-
     """ concrete implementation of filter form """
     # This may seem like a hack, but this allows time for the Contact model's
     # default manage to be replaced at run-time.  There are many applications
@@ -71,7 +72,6 @@ class FilterGroupsForm(FilterForm):
             choices = ((-1, 'No Group'),) + tuple([(int(g.pk), g.name) for g in Group.objects.all().order_by('name')])
             self.fields['groups'] = forms.MultipleChoiceField(choices=choices, required=True)
 
-
     def filter(self, request, queryset):
         groups_pk = self.cleaned_data['groups']
         if '-1' in groups_pk:
@@ -81,9 +81,9 @@ class FilterGroupsForm(FilterForm):
                 try:
                     return queryset.filter(Q(groups=None) | Q(groups__in=groups_pk))
                 except FieldError:
-                    q=Q(group=None)
-                    for f in Group.objects.filter(pk__in=groups_pk).values_list('name',flat=True):
-                        q=q | Q(group__icontains=f)
+                    q = Q(group=None)
+                    for f in Group.objects.filter(pk__in=groups_pk).values_list('name', flat=True):
+                        q = q | Q(group__icontains=f)
 
                     return queryset.filter(q)
             else:
@@ -92,34 +92,31 @@ class FilterGroupsForm(FilterForm):
                 except FieldError:
                     return queryset.filter(group=None)
 
-
         else:
             try:
                 return queryset.filter(groups__in=groups_pk)
             except FieldError:
-                q=None
-                for f in Group.objects.filter(pk__in=groups_pk).values_list('name',flat=True):
+                q = None
+                for f in Group.objects.filter(pk__in=groups_pk).values_list('name', flat=True):
                     if not q:
-                        q=Q(group__iregex="\m%s\y"%f)
+                        q = Q(group__iregex="\m%s\y" % f)
                     else:
-                        q=q | Q(group__iregex="\m%s\y"%f)
+                        q = q | Q(group__iregex="\m%s\y" % f)
                 return queryset.filter(q)
 
 
 class NewContactForm(forms.ModelForm):
-
     class Meta:
         model = Contact
 
 
 class FreeSearchForm(FilterForm):
-
     """ concrete implementation of filter form
         TO DO: add ability to search for multiple search terms separated by 'or'
     """
 
     searchx = forms.CharField(max_length=100, required=False, label="Free-form search",
-                             help_text="Use 'or' to search for multiple names")
+                              help_text="Use 'or' to search for multiple names")
 
     def filter(self, request, queryset):
         searchx = self.cleaned_data['searchx'].strip()
@@ -135,14 +132,15 @@ class FreeSearchForm(FilterForm):
             return queryset.filter(Q(name__icontains=searchx)
                                    | Q(reporting_location__name__icontains=searchx)
                                    | Q(connection__identity__icontains=searchx))
-class FreeSearchForm2(FilterForm):
 
+
+class FreeSearchForm2(FilterForm):
     """ concrete implementation of filter form
         TO DO: add ability to search for multiple search terms separated by 'or'
     """
 
     searchx = forms.CharField(max_length=100, required=False, label="Free-form search",
-                             help_text="Use 'or' to search for multiple names")
+                              help_text="Use 'or' to search for multiple names")
 
     def filter(self, request, queryset):
         searchx = self.cleaned_data['searchx'].strip()
@@ -159,23 +157,23 @@ class FreeSearchForm2(FilterForm):
                                    | Q(loc_name__icontains=searchx)
                                    | Q(connections__icontains=searchx))
 
-class FreeSearchTextForm(FilterForm):
 
+class FreeSearchTextForm(FilterForm):
     """ concrete implementation of filter form """
 
     search = forms.CharField(max_length=100, required=True, label="Free-form search",
                              #help_text="Use 'or' to search for multiple names",
-                             widget=forms.TextInput(attrs={'class':'itext', 'size':14}))
+                             widget=forms.TextInput(attrs={'class': 'itext', 'size': 14}))
 
     def filter(self, request, queryset):
         search = self.cleaned_data['search']
         return queryset.filter(text__icontains=search)
 
+
 class HandledByForm(FilterForm):
     type = forms.ChoiceField(
-            choices=(('', '-----'), ('poll', 'Poll Response'), ('rapidsms_xforms', 'Report'), ('*', 'Other'),), \
-            required=False)
-
+        choices=(('', '-----'), ('poll', 'Poll Response'), ('rapidsms_xforms', 'Report'), ('*', 'Other'),), \
+        required=False)
 
     def filter(self, request, queryset):
         handled_by = self.cleaned_data['type']
@@ -188,15 +186,17 @@ class HandledByForm(FilterForm):
 
 
 class DistictFilterForm(FilterForm):
-
     """ filter cvs districs on their districts """
 
     district2 = forms.ChoiceField(label="District", choices=(('', '-----'), (-1,
-                                 'No District')) + tuple([(int(d.pk),
-                                 d.name) for d in
-                                 Location.objects.filter(type__slug='district'
-                                 ).order_by('name')]), required=False,
-                                 widget=forms.Select({'onchange':'update_district2(this)'}))
+                                                                             'No District')) + tuple([(int(d.pk),
+                                                                                                       d.name) for d in
+                                                                                                      Location.objects.filter(
+                                                                                                          type__slug='district'
+                                                                                                      ).order_by(
+                                                                                                          'name')]),
+                                  required=False,
+                                  widget=forms.Select({'onchange': 'update_district2(this)'}))
 
 
     def filter(self, request, queryset):
@@ -216,9 +216,12 @@ class DistictFilterForm(FilterForm):
                 #return queryset.filter(reporting_location__in=district.get_descendants(include_self=True))
             else:
                 return queryset
+
+
 class RolesFilter(FilterForm):
     role = forms.ChoiceField(choices=(('', '----'),) + tuple(
-                            [(int(g.id), g.name) for g in Group.objects.all().order_by('name')]), required=False)
+        [(int(g.id), g.name) for g in Group.objects.all().order_by('name')]), required=False)
+
     def filter(self, request, queryset):
         group_pk = self.cleaned_data['role']
         if group_pk == '':
@@ -236,11 +239,11 @@ class RolesFilter(FilterForm):
                     return queryset.filter(groups__contains=grp.name)
             return queryset
 
-class MultipleDistictFilterForm(FilterForm):
 
+class MultipleDistictFilterForm(FilterForm):
     districts = forms.ModelMultipleChoiceField(queryset=
-                                 Location.objects.filter(type__slug='district'
-                                 ).order_by('name'), required=False)
+                                               Location.objects.filter(type__slug='district'
+                                               ).order_by('name'), required=False)
 
 
     def filter(self, request, queryset):
@@ -252,13 +255,13 @@ class MultipleDistictFilterForm(FilterForm):
 
 
 class DistictFilterMessageForm(FilterForm):
-
     """ filter cvs districs on their districts """
     district = forms.ChoiceField(choices=(('', '-----'), (-1,
-                                 'No District')) + tuple([(int(d.pk),
-                                 d.name) for d in
-                                 Location.objects.filter(type__slug='district'
-                                 ).order_by('name')]), required=False)
+                                                          'No District')) + tuple([(int(d.pk),
+                                                                                    d.name) for d in
+                                                                                   Location.objects.filter(
+                                                                                       type__slug='district'
+                                                                                   ).order_by('name')]), required=False)
 
 
     def filter(self, request, queryset):
@@ -273,12 +276,13 @@ class DistictFilterMessageForm(FilterForm):
             except Location.DoesNotExist:
                 district = None
             if district:
-                return queryset.filter(connection__contact__reporting_location__in=district.get_descendants(include_self=True))
+                return queryset.filter(
+                    connection__contact__reporting_location__in=district.get_descendants(include_self=True))
             else:
                 return queryset
 
-class MassTextForm(ActionForm):
 
+class MassTextForm(ActionForm):
     text = forms.CharField(max_length=160, required=True, widget=SMSInput())
     action_label = 'Send Message'
 
@@ -304,7 +308,7 @@ class MassTextForm(ActionForm):
 
     def perform(self, request, results):
         if type(results).__name__ != 'QuerySet':
-            results = Contact.objects.filter(pk__in=request.REQUEST.get('results',""))
+            results = Contact.objects.filter(pk__in=request.REQUEST.get('results', ""))
         if results is None or len(results) == 0:
             return 'A message must have one or more recipients!', 'error'
 
@@ -312,22 +316,23 @@ class MassTextForm(ActionForm):
             if type(results[0]).__name__ == 'Reporters':
 
                 con_ids = \
-                [r.default_connection.split(',')[1] if len(r.default_connection.split(',')) > 1 else 0 for r in results]
+                    [r.default_connection.split(',')[1] if len(r.default_connection.split(',')) > 1 else 0 for r in
+                     results]
                 connections = list(Connection.objects.filter(pk__in=con_ids).distinct())
                 contacts = list(Contact.objects.filter(pk__in=results.values_list('id', flat=True)))
                 print contacts
             else:
                 connections = \
-                list(Connection.objects.filter(contact__pk__in=results.values_list('id', flat=True)).distinct())
+                    list(Connection.objects.filter(contact__pk__in=results.values_list('id', flat=True)).distinct())
                 contacts = list(results)
             text = self.cleaned_data.get('text', "")
             text = text.replace('%', u'\u0025')
             messages = Message.mass_text(text, connections)
 
             MassText.bulk.bulk_insert(send_pre_save=False,
-                    user=request.user,
-                    text=text,
-                    contacts=contacts)
+                                      user=request.user,
+                                      text=text,
+                                      contacts=contacts)
             masstexts = MassText.bulk.bulk_insert_commit(send_post_save=False, autoclobber=True)
             masstext = masstexts[0]
             if settings.SITE_ID:
@@ -337,8 +342,8 @@ class MassTextForm(ActionForm):
         else:
             return "You don't have permission to send messages!", 'error',
 
-class ReplyTextForm(ActionForm):
 
+class ReplyTextForm(ActionForm):
     text = forms.CharField(required=True, widget=SMSInput())
     action_label = 'Reply to selected'
 
@@ -358,8 +363,8 @@ class ReplyTextForm(ActionForm):
         else:
             return ("You don't have permission to send messages!", 'error',)
 
-class AssignGroupForm(ActionForm):
 
+class AssignGroupForm(ActionForm):
     action_label = 'Assign to group(s)'
 
     # This may seem like a hack, but this allows time for the Contact model's
@@ -375,7 +380,9 @@ class AssignGroupForm(ActionForm):
             forms.Form.__init__(self, **kwargs)
         if hasattr(Contact, 'groups'):
             if self.request.user.is_authenticated():
-                self.fields['groups'] = forms.ModelMultipleChoiceField(queryset=Group.objects.filter(pk__in=self.request.user.groups.values_list('pk', flat=True)), required=False)
+                self.fields['groups'] = forms.ModelMultipleChoiceField(
+                    queryset=Group.objects.filter(pk__in=self.request.user.groups.values_list('pk', flat=True)),
+                    required=False)
             else:
                 self.fields['groups'] = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False)
 
@@ -389,7 +396,6 @@ class AssignGroupForm(ActionForm):
 
 
 class RemoveGroupForm(ActionForm):
-
     action_label = 'Remove  group(s)'
 
     def __init__(self, data=None, **kwargs):
@@ -400,7 +406,9 @@ class RemoveGroupForm(ActionForm):
             forms.Form.__init__(self, **kwargs)
         if hasattr(Contact, 'groups'):
             if self.request.user.is_authenticated():
-                self.fields['groups'] = forms.ModelMultipleChoiceField(queryset=Group.objects.filter(pk__in=self.request.user.groups.values_list('pk', flat=True)), required=False)
+                self.fields['groups'] = forms.ModelMultipleChoiceField(
+                    queryset=Group.objects.filter(pk__in=self.request.user.groups.values_list('pk', flat=True)),
+                    required=False)
             else:
                 self.fields['groups'] = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False)
 
@@ -412,8 +420,8 @@ class RemoveGroupForm(ActionForm):
                 c.groups.remove(g)
         return ('%d Contacts removed from %d groups.' % (len(results), len(groups)), 'success',)
 
-class FlaggedForm(FilterForm):
 
+class FlaggedForm(FilterForm):
     """ filter flagged/unflagged messages form """
 
     flagged = forms.ChoiceField(choices=(('', '-----'), (1, 'Flagged'), (0, 'Not flagged'),))
@@ -427,8 +435,8 @@ class FlaggedForm(FilterForm):
         else:
             return queryset.filter(flags=None)
 
-class FlagMessageForm(ActionForm):
 
+class FlagMessageForm(ActionForm):
     """ flag/unflag messages action form """
 
     flag = forms.ChoiceField(choices=(('', '-----'), ('flag', 'Flag'), ('unflag', 'Unflag'),))
@@ -445,6 +453,7 @@ class FlagMessageForm(ActionForm):
                 for msg_flag in msg.flags.all():
                     msg_flag.delete()
         return ('%d message(s) have been %sed' % (len(results), flag), 'successfully!',)
+
 
 class GenderFilterForm(FilterForm):
     """ filter contacts by their gender"""
@@ -466,9 +475,11 @@ class GenderFilterForm(FilterForm):
 
 class AgeFilterForm(FilterForm):
     """ filter contacts by their age """
-    flag = forms.ChoiceField(label='' , choices=(('', '-----'), ('==', 'Equal to'), ('>', 'Greater than'), ('<', \
-                                        'Less than'), ('None', 'N/A')), required=False)
-    age = forms.CharField(max_length=20, label="Age", widget=forms.TextInput(attrs={'size':'20'}), required=False)
+    flag = forms.ChoiceField(label='', choices=(('', '-----'), ('==', 'Equal to'), ('>', 'Greater than'), ('<', \
+                                                                                                           'Less than'),
+                                                ('None', 'N/A')), required=False)
+    age = forms.CharField(max_length=20, label="Age", widget=forms.TextInput(attrs={'size': '20'}), required=False)
+
     def filter(self, request, queryset):
 
         flag = self.cleaned_data['flag']

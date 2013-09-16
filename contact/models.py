@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.sites.managers import CurrentSiteManager
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from rapidsms_httprouter.managers import BulkInsertManager
 from rapidsms_httprouter.models import Message
 from rapidsms.models import Contact, Connection
@@ -43,6 +43,7 @@ class Flag(models.Model):
                                choices=((contains_all_of, "contains_all_of"), (contains_one_of, "contains_one_of"),),
                                null=True)
     rule_regex = models.CharField(max_length=700, null=True)
+    groups = models.ManyToManyField(Group, related_name='flags')
 
     def get_messages(self):
         message_flags = self.messages.values_list('message', flat=True)

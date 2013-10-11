@@ -18,6 +18,9 @@ from django.conf import settings
 import datetime
 from django.core.exceptions import FieldError
 
+from django.utils.translation import ugettext as _
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -382,7 +385,7 @@ class AssignGroupForm(ActionForm):
             if self.request.user.is_authenticated():
                 self.fields['groups'] = forms.ModelMultipleChoiceField(
                     queryset=Group.objects.filter(pk__in=self.request.user.groups.values_list('pk', flat=True)),
-                    required=False)
+                    required=False, label=_("Groups"))
             else:
                 self.fields['groups'] = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), required=False)
 
@@ -458,7 +461,7 @@ class FlagMessageForm(ActionForm):
 class GenderFilterForm(FilterForm):
     """ filter contacts by their gender"""
 
-    gender = forms.ChoiceField(choices=(('', '-----'), ('M', 'Male'), ('F', 'Female'), ('None', 'N/A')))
+    gender = forms.ChoiceField(choices=(('', '-----'), ('M', _('Male')), ('F', _('Female')), ('None', _('N/A'))))
 
     def filter(self, request, queryset):
 

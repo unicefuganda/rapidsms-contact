@@ -73,7 +73,7 @@ class FilterGroupsForm(FilterForm):
             forms.Form.__init__(self, **kwargs)
         if hasattr(Contact, 'groups'):
             choices = ((-1, 'No Group'),) + tuple([(int(g.pk), g.name) for g in Group.objects.all().order_by('name')])
-            self.fields['groups'] = forms.MultipleChoiceField(choices=choices, required=True)
+            self.fields['groups'] = forms.MultipleChoiceField(choices=choices, required=True, label=_("Groups"))
 
     def filter(self, request, queryset):
         groups_pk = self.cleaned_data['groups']
@@ -246,7 +246,7 @@ class RolesFilter(FilterForm):
 class MultipleDistictFilterForm(FilterForm):
     districts = forms.ModelMultipleChoiceField(queryset=
                                                Location.objects.filter(type__slug='district'
-                                               ).order_by('name'), required=False)
+                                               ).order_by('name'), required=False, label=_("Districts"))
 
 
     def filter(self, request, queryset):
@@ -461,7 +461,8 @@ class FlagMessageForm(ActionForm):
 class GenderFilterForm(FilterForm):
     """ filter contacts by their gender"""
 
-    gender = forms.ChoiceField(choices=(('', '-----'), ('M', _('Male')), ('F', _('Female')), ('None', _('N/A'))))
+    gender = forms.ChoiceField(choices=(('', '-----'), ('M', _('Male')), ('F', _('Female')), ('None', _('N/A'))),
+                               label=_("Gender"))
 
     def filter(self, request, queryset):
 
@@ -478,10 +479,10 @@ class GenderFilterForm(FilterForm):
 
 class AgeFilterForm(FilterForm):
     """ filter contacts by their age """
-    flag = forms.ChoiceField(label='', choices=(('', '-----'), ('==', 'Equal to'), ('>', 'Greater than'), ('<', \
-                                                                                                           'Less than'),
-                                                ('None', 'N/A')), required=False)
-    age = forms.CharField(max_length=20, label="Age", widget=forms.TextInput(attrs={'size': '20'}), required=False)
+    flag = forms.ChoiceField(label='', choices=(('', '-----'), ('==', _('Equal to')), ('>', _('Greater than')), ('<', \
+                                                                                                           _('Less than')),
+                                                ('None', _('N/A'))), required=False)
+    age = forms.CharField(max_length=20, label=_("Age"), widget=forms.TextInput(attrs={'size': '20'}), required=False)
 
     def filter(self, request, queryset):
 

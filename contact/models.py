@@ -43,8 +43,8 @@ class Flag(models.Model):
     rule = models.IntegerField(max_length=10,
                                choices=((contains_all_of, _("contains_all_of")), (contains_one_of, _("contains_one_of")),),
                                null=True, verbose_name=_("Rule"))
-    rule_regex = models.CharField(max_length=700, null=True)
-    groups = models.ManyToManyField(Group, related_name='flags')
+    rule_regex = models.CharField(max_length=700, null=True, blank=True)
+    groups = models.ManyToManyField(Group, related_name='flags', blank=True)
 
     def get_messages(self):
         message_flags = self.messages.values_list('message', flat=True)

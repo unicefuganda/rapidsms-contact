@@ -48,7 +48,7 @@ class Flag(models.Model):
 
     def get_messages(self):
         message_flags = self.messages.values_list('message', flat=True)
-        return Message.objects.filter(pk__in=message_flags)
+        return Message.objects.filter(pk__in=message_flags, direction='I')
 
     def get_regex(self):
         words = [w.strip() for w in self.words.split(",") if len(w) > 0]

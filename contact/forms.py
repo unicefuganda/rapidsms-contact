@@ -395,7 +395,7 @@ class AssignGroupForm(ActionForm):
         for c in contacts:
             for g in groups:
                 c.groups.add(g)
-        return (_('%(results)d Contacts assigned to %(groups)d groups.' % {"results":len(results), "groups":len(groups)}), 'success',)
+        return (_('%(results)d Contacts assigned to %(groups)d groups.') % {"results":len(results), "groups":len(groups)}, 'success',)
 
 
 class RemoveGroupForm(ActionForm):
@@ -421,7 +421,7 @@ class RemoveGroupForm(ActionForm):
         for c in contacts:
             for g in groups:
                 c.groups.remove(g)
-        return (_('%(contacts)d Contacts removed from %(groups)d groups.' % {"contacts":len(results), "groups":len(groups)}), 'success',)
+        return (_('%(contacts)d Contacts removed from %(groups)d groups.') % {"contacts":len(results), "groups":len(groups)}, 'success',)
 
 
 class FlaggedForm(FilterForm):
